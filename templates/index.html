@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Video Summarizer</title>
+    <!-- Load CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+</head>
+<body>
+    <!-- Display the logo image -->
+    <img class = "logo" src="{{ url_for('static', path='images/logo.png') }}" alt="Logo">
+    <main>
+        <h1> AI Video Summary Generator 🤖</h1>
+        <h2>Automatically generate professional SOPs, Training Guides, Meeting Summaries, and more from your videos.</h2>
+
+        <form action="#" method="post" enctype="multipart/form-data" autocomplete="on">
+
+            <!-- File Upload -->
+            <div>
+                <label for="uploadFiles">Upload file(s) or videos</label>
+                <input id="uploadFiles" name="uploadFiles" type="file" accept="video/*,image/*,application/*" multiple />
+                <div style="margin-top:0.5rem">
+                    <label for="uploadFolder">Or select a folder</label>
+                    <input id="uploadFolder" name="uploadFolder" type="file" webkitdirectory directory multiple />
+                </div>
+                <p class="help">Tip: hold Ctrl/Cmd to select multiple files. Folder upload requires browser support (Chrome, Edge, Safari).</p>
+            
+                <script>
+                    const fileInput = document.getElementById("uploadFiles");
+                    const folderInput = document.getElementById("uploadFolder");
+                    const form = document.querySelector("form");
+
+                    // Disable the opposite option when one is selected
+                    fileInput.addEventListener("change", function () {
+                        folderInput.disabled = fileInput.files.length > 0;
+                    });
+
+                    folderInput.addEventListener("change", function () {
+                        fileInput.disabled = folderInput.files.length > 0;
+                    });
+
+                    // Prevent form submission if neither (file or folder) is selected
+                    form.addEventListener("submit", function (event) {
+                        const noFiles = fileInput.files.length === 0;
+                        const noFolder = folderInput.files.length === 0;
+
+                        if (noFiles && noFolder) {
+                            event.preventDefault();
+                            alert("Please upload at least one file OR choose a folder.");
+                        }
+                    });
+                </script>
+
+            </div>
+
+            <!-- Summary Type -->
+            <div>
+                <label for="summaryType">Select a Summary Type</label>
+                <select id="summaryType" name="summaryType" required>
+                    <option value="">Choose a type</option>
+                    <option value="Sop">SOP</option>
+                    <option value="TrainingGuide">Training Guide</option>
+                    <option value="MeetingSummary">Meeting Summary</option>
+                    <option value="CustomPrompt">Custom Prompt</option>
+                </select>
+                        <!--Custom Prompt-->
+                <div id="customPromptContainer" style="display:none; margin-top:1rem;">
+                    <label for="customPrompt">Enter your custom prompt</label>
+                    <textarea id="customPrompt" name="customPrompt" rows="5"></textarea>
+                </div>
+                    <!--Display customPrompt condition-->
+                    <script>
+                        document.getElementById("summaryType").addEventListener("change", function() {
+                            const container = document.getElementById("customPromptContainer"); 
+
+                            if (this.value === "CustomPrompt") {
+                                container.style.display = "block";
+                            } else {
+                                container.style.display = "none";
+                            }
+                        });
+                    </script>
+                    <!-- Checks that custom prompt is not empty. -->
+                    <script>
+                        const summaryType = document.getElementById("summaryType");
+                        const customPrompt = document.getElementById("customPrompt");
+                        const customPromptContainer = document.getElementById("customPromptContainer");
+
+                        summaryType.addEventListener("change", function() {
+                            if (this.value === "CustomPrompt") {
+                                customPromptContainer.style.display = "block";
+                                customPrompt.required = true;
+                            } else {
+                                customPromptContainer.style.display = "none";
+                                customPrompt.required = false;
+                            }
+                        });
+                    </script>
+            </div>
+
+            <!-- Audience Context -->
+            <div>
+                <label for="audienceContext">Audience Context (optional)</label>
+                <textarea id="audienceContext" name="audienceContext" rows="6" placeholder="Provide additional context for the summary"></textarea>
+            </div>
+
+            <!-- Checkboxes -->
+            <fieldset style="padding:1rem; border:1px solid #ccc; border-radius:5px;">
+                <legend style="font-weight:bold;">Summary Options</legend>
+                <div class="checkbox-container">
+                    <div class="checkbox-group">
+                        <input id="includeScreenshots" name="includeScreenshots" type="checkbox">
+                        <label for="includeScreenshots">Include Screenshots</label>
+                    </div>
+                    <div>
+                    <label for="outputFormat">Output Format </label>
+                        <select id="outputFormat" name="outputFormat" required>
+                            <option value="word">Word</option>
+                            <option value="pdf">PDF</option>
+                        </select>   
+                    </div>
+                    <div>
+                        <label for="detailLevel">Detail Level</label>
+                        <select id="detailLevel" name="detailLevel">
+                            <option value=1>1</option>
+                            <option value=2>2</option>
+                            <option value=3>3</option>
+                            <option value=4>4</option>
+                            <option value=5>5</option>
+                        </select>
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- Submit Button -->
+            <div>
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+    </main>
+</body>
+</html>
