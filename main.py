@@ -19,7 +19,7 @@ curl -X POST "  /params" \
      -F "file=@/Users/chris.solomou/Downloads/Screenshot 2025-11-11 at 11.55.08.png"
 """
 
-BUCKET_PATH = "gs://ai-video-summarizer-dev-bucket"
+BUCKET_NAME = "ai-video-summarizer-dev-bucket"
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -38,12 +38,25 @@ def save_json(data: Dict[str, Any]) -> None:
         f.write("\n")
 
 
-def upload_to_bucket(bucket_name: str, source_file_path):
+def upload_to_bucket(
+    bucket_name: str, 
+    upload_file: UploadFile,
+    blob_name: Optional[str] = None
+):  
+    
     client = storage.Client()
     bucket = client.bucket(bucket_name)
-    pass
+    blob = bucket.blob(blob_name)
 
-def generate_blob_name(file_name:str) -> str:...
+    blob.upload_from_file(
+        upload_file.file,
+        content_type=upload_file.content_type
+    )
+    print("File saved successfully to bucket!")
+    #return f"gs://{bucket_name}/{blob_name}"
+
+
+def generate_blob_name(file_name: str) -> str: ...
 
 
 def generate_upload_signed_url(bucket_name: str, blob_name: str) -> str:
@@ -63,9 +76,6 @@ def generate_upload_signed_url(bucket_name: str, blob_name: str) -> str:
 
 def send_to_pub_sub(data: Dict[str, Any]) -> PubSubMessage:
     return PubSubMessage(**data)
-
-    
-
 
 
 @app.api_route("/", methods=["GET", "POST"])
@@ -101,30 +111,45 @@ async def read_root(
                 ),
             },
         )
+        user_id = str(uuid.uuid4())
+
         if uploadFiles:
             tasks = [save_file(file) for file in uploadFiles]
             await asyncio.gather(*tasks, return_exceptions=True)
 
-        metadata = {
-            "output_format": outputFormat,
-            "include_screenshots": includeScreenshots,
-            "audience_context": audienceContext,
-            "custom_prompt": customPrompt,
-            "detail_level": detailLevel,
-        }
+            metadata = {
+                "output_format": outputFormat,
+                "include_screenshots": includeScreenshots,
+                "audience_context": audienceContext,
+                "custom_prompt": customPrompt,
+                "detail_level": detailLevel,
+            }
 
-        data = {
-            "user_id": str(uuid.uuid4()),
-            "video_id": str(uuid.uuid4()), # blob name
-            "file_path": "submissions",
-            "summary_type": summaryType,
-            "params": metadata,
-            "processing_timestamp": str(datetime.now()),
-        }
+            data = {
+                "user_id": user_id,
+                "video_ids": [],  
+                "file_paths": [],
+                "summary_type": summaryType,
+                "params": metadata,
+                "processing_timestamp": str(datetime.now()),
+            }
 
-        save_json(data=data)
+        for file in uploadFiles:
 
-        message = PubSubMessage(**data)
+
+            format = file.filename.split(".")[-1]
+            video_id = str(uuid.uuid4())
+            file_path = f"gs://{BUCKET_NAME}/{video_id}.{format}" # blob_name
+            blob_name = video_id + "." + format
+            file.file.seek(0)
+            upload_to_bucket(bucket_name = BUCKET_NAME,upload_file = file, blob_name = blob_name)
+
+
+            data["video_ids"].append(video_id)
+            data["file_paths"].append(file_path)
+
+            # message = PubSubMessage(**data)
+
 
         # Render result template
         return templates.TemplateResponse(
