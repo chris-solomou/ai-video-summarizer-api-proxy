@@ -1,7 +1,9 @@
 from fastapi import UploadFile
 from google.cloud import storage
-from typing import Optional
+from typing import Optional, Dict, Any
 from datetime import timedelta
+from google.cloud import pubsub_v1
+import json
 
 
 class StorageBucket:
@@ -45,6 +47,27 @@ class StorageBucket:
             version="v4",
             expiration=timedelta(minutes=15),
             method=method,
-            # content_type="application/octet-stream",
+            content_type="application/octet-stream",
         )
         return url
+    
+
+class PubSubPublisher:
+    def __init__(
+        self,
+        pubsub_topic: str,
+        publisher: Optional[pubsub_v1.PublisherClient] = None,
+    ):
+        self.topic = pubsub_topic
+        self.publisher = publisher or pubsub_v1.PublisherClient()
+
+    def publish_message(self, message: Dict[str, Any]) -> bool:
+        try:
+            future = self.publisher.publish(
+                self.topic, json.dumps(message).encode("utf-8")
+            )
+            future.result()  # Wait for the publish to complete
+            return True
+        except Exception as e:
+            print(f"Failed to publish the message with exception {e}")
+            return False
