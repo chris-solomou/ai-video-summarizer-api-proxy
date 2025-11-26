@@ -9,9 +9,7 @@ class Payload(BaseModel):
     
 
 class PubSubMessage(BaseModel):
-    user_id : int | str
     video_id: str
-    file_path: str
     summary_type: str
     params: Dict[str, Any]
     processing_timestamp: datetime
