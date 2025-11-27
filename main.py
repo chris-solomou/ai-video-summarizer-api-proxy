@@ -4,11 +4,23 @@ from fastapi.responses import HTMLResponse
 import json
 from typing import Dict, Any, Optional, List
 import uuid
-from datetime import datetime, timedelta
-from models import PubSubMessage
+from datetime import datetime
+from models import PubSubMessage, SignedURLRequest
 from fastapi.staticfiles import StaticFiles
 import asyncio
 from google.cloud import storage
+from sources.gcp import StorageBucket
+
+def generate_video_id(file: UploadFile) -> str:
+    file_name = file.filename
+    ext = file_name.split(".")[-1]
+    return str(uuid.uuid4()) + "." + ext
+
+
+
+BUCKET_NAME = "ai-video-summarizer-dev-bucket"
+client = storage.Client()
+input_bucket = StorageBucket(bucket_name=BUCKET_NAME, client=client)
 
 """
 curl -X POST "  /params" \
@@ -19,7 +31,6 @@ curl -X POST "  /params" \
      -F "file=@/Users/chris.solomou/Downloads/Screenshot 2025-11-11 at 11.55.08.png"
 """
 
-BUCKET_NAME = "ai-video-summarizer-dev-bucket"
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -36,47 +47,6 @@ def save_json(data: Dict[str, Any]) -> None:
     with open(f"submissions.json", "a") as f:
         f.write(json.dumps(data, default=str))
         f.write("\n")
-
-
-def upload_to_bucket(
-    bucket_name: str, 
-    upload_file: UploadFile,
-    blob_name: Optional[str] = None
-):  
-    
-    client = storage.Client()
-    bucket = client.bucket(bucket_name)
-    blob = bucket.blob(blob_name)
-
-    blob.upload_from_file(
-        upload_file.file,
-        content_type=upload_file.content_type
-    )
-    print("File saved successfully to bucket!")
-    #return f"gs://{bucket_name}/{blob_name}"
-
-
-def generate_blob_name(file_name: str) -> str: ...
-
-
-def generate_upload_signed_url(bucket_name: str, blob_name: str) -> str:
-    client = storage.Client()
-
-    bucket = client.bucket(bucket_name)
-    blob = bucket.blob(blob_name)
-
-    url = blob.generate_signed_url(
-        version="v4",
-        expiration=timedelta(minutes=15),
-        method="PUT",
-        # content_type="application/octet-stream",
-    )
-    return url
-
-
-def send_to_pub_sub(data: Dict[str, Any]) -> PubSubMessage:
-    return PubSubMessage(**data)
-
 
 @app.api_route("/", methods=["GET", "POST"])
 async def read_root(
@@ -127,7 +97,7 @@ async def read_root(
 
             data = {
                 "user_id": user_id,
-                "video_ids": [],  
+                "video_ids": [],
                 "file_paths": [],
                 "summary_type": summaryType,
                 "params": metadata,
@@ -135,21 +105,24 @@ async def read_root(
             }
 
         for file in uploadFiles:
+            video_id = generate_video_id(file)
 
+            message = PubSubMessage(
+                video_id=video_id,
+                summary_type=summaryType,
+                params=metadata,
+                processing_timestamp=str(datetime.now())
+            ).dict()
 
-            format = file.filename.split(".")[-1]
-            video_id = str(uuid.uuid4())
-            file_path = f"gs://{BUCKET_NAME}/{video_id}.{format}" # blob_name
-            blob_name = video_id + "." + format
             file.file.seek(0)
-            upload_to_bucket(bucket_name = BUCKET_NAME,upload_file = file, blob_name = blob_name)
-
+            file_path = input_bucket.upload_file_to_bucket(
+                upload_file=file, blob_name=video_id
+            )
 
             data["video_ids"].append(video_id)
             data["file_paths"].append(file_path)
 
-            # message = PubSubMessage(**data)
-
+        
 
         # Render result template
         return templates.TemplateResponse(
