@@ -4,125 +4,76 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>AI Video Summarizer</title>
-    <!-- Load CSS -->
     <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
 </head>
-<body>
-    <!-- Display the logo image -->
-    <img class = "logo" src="{{ url_for('static', path='images/logo.png') }}" alt="Logo">
-    <main>
-        <h1> AI Video Summary Generator 🤖</h1>
-        <h2>Automatically generate professional SOPs, Training Guides, Meeting Summaries, and more from your videos.</h2>
 
-        <form action="#" method="post" enctype="multipart/form-data" autocomplete="on">
+<body>
+    <img class="logo" src="{{ url_for('static', path='images/logo.png') }}" alt="Logo">
+
+    <main>
+        <h1>AI Video Summary Generator 🤖</h1>
+        <h2>Automatically generate SOPs, Training Guides, Meeting Summaries, and more.</h2>
+
+        <form id="summaryForm" action="#" autocomplete="on">
 
             <!-- File Upload -->
             <div>
-                <label for="uploadFiles">Upload file(s) or videos</label>
-                <input id="uploadFiles" name="uploadFiles" type="file" accept="video/*,image/*,application/*" multiple />
+                <label for="uploadFiles">Upload file(s)</label>
+                <input id="uploadFiles" type="file" accept="video/*,image/*,application/*" multiple />
+
                 <div style="margin-top:0.5rem">
-                    <label for="uploadFolder">Or select a folder</label>
-                    <input id="uploadFolder" name="uploadFolder" type="file" webkitdirectory directory multiple />
+                    <label for="uploadFolder">Or upload a folder</label>
+                    <input id="uploadFolder" type="file" webkitdirectory directory multiple />
                 </div>
-                <p class="help">Tip: hold Ctrl/Cmd to select multiple files. Folder upload requires browser support (Chrome, Edge, Safari).</p>
-            
-                <script>
-                    const fileInput = document.getElementById("uploadFiles");
-                    const folderInput = document.getElementById("uploadFolder");
-                    const form = document.querySelector("form");
 
-                    // Disable the opposite option when one is selected
-                    fileInput.addEventListener("change", function () {
-                        folderInput.disabled = fileInput.files.length > 0;
-                    });
-
-                    folderInput.addEventListener("change", function () {
-                        fileInput.disabled = folderInput.files.length > 0;
-                    });
-
-                    // Prevent form submission if neither (file or folder) is selected
-                    form.addEventListener("submit", function (event) {
-                        const noFiles = fileInput.files.length === 0;
-                        const noFolder = folderInput.files.length === 0;
-
-                        if (noFiles && noFolder) {
-                            event.preventDefault();
-                            alert("Please upload at least one file OR choose a folder.");
-                        }
-                    });
-                </script>
-
+                <p class="help">Tip: hold Ctrl/Cmd to select multiple files.</p>
             </div>
 
             <!-- Summary Type -->
             <div>
-                <label for="summaryType">Select a Summary Type</label>
-                <select id="summaryType" name="summaryType" required>
+                <label for="summaryType">Summary Type</label>
+                <select id="summaryType" required>
                     <option value="">Choose a type</option>
                     <option value="Sop">SOP</option>
                     <option value="TrainingGuide">Training Guide</option>
                     <option value="MeetingSummary">Meeting Summary</option>
                     <option value="CustomPrompt">Custom Prompt</option>
                 </select>
-                        <!--Custom Prompt-->
+
                 <div id="customPromptContainer" style="display:none; margin-top:1rem;">
-                    <label for="customPrompt">Enter your custom prompt</label>
-                    <textarea id="customPrompt" name="customPrompt" rows="5"></textarea>
+                    <label for="customPrompt">Custom Prompt</label>
+                    <textarea id="customPrompt" rows="5"></textarea>
                 </div>
-                    <!--Display customPrompt condition-->
-                    <script>
-                        document.getElementById("summaryType").addEventListener("change", function() {
-                            const container = document.getElementById("customPromptContainer"); 
-
-                            if (this.value === "CustomPrompt") {
-                                container.style.display = "block";
-                            } else {
-                                container.style.display = "none";
-                            }
-                        });
-                    </script>
-                    <!-- Checks that custom prompt is not empty. -->
-                    <script>
-                        const summaryType = document.getElementById("summaryType");
-                        const customPrompt = document.getElementById("customPrompt");
-                        const customPromptContainer = document.getElementById("customPromptContainer");
-
-                        summaryType.addEventListener("change", function() {
-                            if (this.value === "CustomPrompt") {
-                                customPromptContainer.style.display = "block";
-                                customPrompt.required = true;
-                            } else {
-                                customPromptContainer.style.display = "none";
-                                customPrompt.required = false;
-                            }
-                        });
-                    </script>
             </div>
 
             <!-- Audience Context -->
             <div>
                 <label for="audienceContext">Audience Context (optional)</label>
-                <textarea id="audienceContext" name="audienceContext" rows="6" placeholder="Provide additional context for the summary"></textarea>
+                <textarea id="audienceContext" rows="6"
+                    placeholder="Provide additional context for the summary"></textarea>
             </div>
 
-            <!-- Checkboxes -->
+            <!-- Options -->
             <fieldset style="padding:1rem; border:1px solid #ccc; border-radius:5px;">
-                <legend style="font-weight:bold;">Summary Options</legend>
+                <legend>Summary Options</legend>
+
                 <div class="checkbox-container">
                     <div class="checkbox-group">
-                        <input id="includeScreenshots" name="includeScreenshots" type="checkbox">
+                        <input id="includeScreenshots" type="checkbox">
                         <label for="includeScreenshots">Include Screenshots</label>
                     </div>
+
                     <div>
-                    <label for="outputFormat">Output Format </label>
-                        <select id="outputFormat" name="outputFormat" required>
+                        <label for="outputFormat">Output Format</label>
+                        <select id="outputFormat" required>
                             <option value="word">Word</option>
                             <option value="pdf">PDF</option>
-                        </select>   
+                        </select>
                     </div>
+
                     <div>
                         <label for="detailLevel">Detail Level</label>
-                        <select id="detailLevel" name="detailLevel">
+                        <select id="detailLevel">
                             <option value=1>1</option>
                             <option value=2>2</option>
                             <option value=3>3</option>
@@ -133,11 +84,105 @@
                 </div>
             </fieldset>
 
-            <!-- Submit Button -->
             <div>
                 <button type="submit">Submit</button>
             </div>
+
         </form>
     </main>
+
+    <script>
+        const summaryTypeEl = document.getElementById("summaryType");
+        const customPromptContainer = document.getElementById("customPromptContainer");
+        const customPromptEl = document.getElementById("customPrompt");
+        
+        // Checks that custom prompt is not empty
+        summaryTypeEl.addEventListener("change", function() {
+            if (this.value === "CustomPrompt") {
+                customPromptContainer.style.display = "block";
+                customPromptEl.required = true;
+            } else {
+                customPromptContainer.style.display = "none";
+                customPromptEl.required = false;
+            }
+        });
+        
+        // Prevent form submission if neither a a file or folder was selected
+        document.getElementById("summaryForm").addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const fileInput = document.getElementById("uploadFiles");
+            const folderInput = document.getElementById("uploadFolder");
+            const files = [...fileInput.files, ...folderInput.files];
+
+            if (files.length === 0) {
+                alert("Please upload at least one file.");
+                return;
+            }
+
+            const metadata = {
+                summaryType: summaryTypeEl.value,
+                customPrompt: customPromptEl.value || null,
+                audienceContext: document.getElementById("audienceContext").value || null,
+                includeScreenshots: document.getElementById("includeScreenshots").checked,
+                outputFormat: document.getElementById("outputFormat").value,
+                detailLevel: parseInt(document.getElementById("detailLevel").value, 10) // base 10
+            };
+            
+            try {
+                
+                // 1. Request signed URLs
+                const signedRes = await fetch("/generate-signed-urls", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        files: files.map(f => ({
+                            filename: f.name,
+                            content_type: f.type || "application/octet-stream"
+                        }))
+                    })
+                });
+
+                if (!signedRes.ok) throw new Error("Failed to get signed URLs");
+
+                const { files: signedFiles } = await signedRes.json();
+                
+                // 2. Upload each file with PUT
+                await Promise.all(signedFiles.map((sf, idx) =>
+                    fetch(sf.signed_url, {
+                        method: "PUT",
+                        body: files[idx],
+                        headers: { "Content-Type": files[idx].type || "application/octet-stream" }
+                    }).then(r => {
+                        if (!r.ok) throw new Error(`Failed upload: ${files[idx].name}`);
+                    })
+                ));
+
+                // 3. Send to Pubsub
+
+                
+                // 4. Submit metadata with video IDs
+                const submitRes = await fetch("/submit-metadata", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        video_ids: signedFiles.map(sf => sf.video_id),
+                        ...metadata
+                    })
+                });
+                
+                if (!submitRes.ok) throw new Error("Failed to submit metadata");
+
+                alert("Upload and submission successful!");
+
+            } catch (err) {
+                console.error(err);
+                alert("Error: " + err.message);
+            }
+        });
+    </script>
+
+    <!-- Implement short polling here for checking status of files -->
+
 </body>
 </html>
