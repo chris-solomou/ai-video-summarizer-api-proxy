@@ -1,111 +1,75 @@
-        body {
-            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-            padding: 2rem;
-            background: #fff;
-        }
-        .logo {
-            position: absolute;
-            top: -29px;
-            left: -29px;
-            width: 350px;
-        }
-        main {
-            position: absolute;
-            top: 95px;
-            left: 430px;
-            max-width: 800px;
-            margin: 0 auto;
-            background: #fff;   
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
+body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #fff;
+    margin: 0;
+}
 
-        .checkbox-container {
-            display: flex;
-            justify-content: space-between; /* equal spacing */
-            gap: 1rem; /* optional, adds consistent spacing */
-            align-items: center; /* optional: vertically aligns */
-        }
+.logo {
+    position: fixed;
+    top: -29px;
+    left: -25px;
+    width: 350px;
+    z-index: 99;
+}
 
-        .checkbox-container > div {
-            flex: 1; /* makes all three fields take equal width */
-        }
+main {
+    margin: 95px auto 0 auto; /* top spacing instead of absolute positioning */
+    max-width: 800px;
+    width: 90%;               /* scales with viewport */
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+}
 
+/* Form and typography */
+h1 { margin-bottom: 0.25rem; }
+h2 { font-weight: normal; font-size: 1rem; margin-bottom: 1.5rem; color: #555; }
+form { display: grid; gap: 1rem; }
+label { display: block; font-weight: 600; margin-bottom: 0.25rem; }
 
-        h1 {    
-            margin-bottom: 0.25rem;
-        }
+input[type="text"],
+input[type="number"],
+select,
+textarea,
+input[type="file"],
+button {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
 
-        h2 {
-            font-weight: normal;
-            font-size: 1rem;
-            margin-bottom: 1.5rem;
-            color: #555;
-        }
+textarea { resize: vertical; }
+.help { font-size: 0.85rem; color: #555; }
 
-        form {
-            display: grid;
-            gap: 1rem;
-        }
+/* Checkboxes */
+.checkbox-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
 
-        label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
+.checkbox-container > div { flex: 1; }
+.checkbox-group { display: flex; align-items: center; gap: 0.5rem; }
 
-        input[type="text"],
-        input[type="number"],
-        select,
-        textarea,
-        input[type="file"],
-        button {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
+/* Buttons */
+button {
+    background: #072e5b;
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background 0.8s ease;
+}
 
-        textarea {
-            resize: vertical;
-        }
+button:hover { background: #0056b3; }
 
-        .help {
-            font-size: 0.85rem;
-            color: #555;
-        }
-
-        .checkbox-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-top: 0.5rem;
-        }
-
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        button {
-            background: #08386b;
-            color: #fff;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-            transition: background 0.4s ease;
-        }
-
-        button:hover {
-            background: #0056b3;
-        }
-
-        @media (max-width: 600px) {
-            .checkbox-container {
-                flex-direction: column;
-            }
-        }
+@media (max-width: 600px) {
+    .checkbox-container { flex-direction: column; }
+}
