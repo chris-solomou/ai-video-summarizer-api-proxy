@@ -53,7 +53,7 @@
                     placeholder="Provide additional context for the summary"></textarea>
             </div>
 
-            <!-- Options -->
+            <!-- Summary Details -->
             <fieldset style="padding:1rem; border:1px solid #ccc; border-radius:5px;">
                 <legend>Summary Options</legend>
 
@@ -120,7 +120,7 @@
                 return;
             }
 
-            const metadata = {
+            const formData = {
                 summaryType: summaryTypeEl.value,
                 customPrompt: customPromptEl.value || null,
                 audienceContext: document.getElementById("audienceContext").value || null,
@@ -154,26 +154,21 @@
                         body: files[idx],
                         headers: { "Content-Type": files[idx].type || "application/octet-stream" }
                     }).then(r => {
-                        if (!r.ok) throw new Error(`Failed upload: ${files[idx].name}`);
+                        if (!r.ok) throw new Error(`Failed upload: ${files[idx].name}. Please try again.`);
                     })
                 ));
-
-                // 3. Send to Pubsub
-
-                
-                // 4. Submit metadata with video IDs
-                const submitRes = await fetch("/submit-metadata", {
+          
+                // 3. Submit formData with video IDs
+                const submitRes = await fetch("/submit-form-data", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         video_ids: signedFiles.map(sf => sf.video_id),
-                        ...metadata
+                        ...formData
                     })
                 });
                 
-                if (!submitRes.ok) throw new Error("Failed to submit metadata");
-
-                alert("Upload and submission successful!");
+                if (!submitRes.ok) throw new Error("Failed to submit form data!");
 
             } catch (err) {
                 console.error(err);
