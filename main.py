@@ -6,7 +6,7 @@ from models import PubSubMessage, SignedUrlResponse, SignedURLRequest, FormData
 from fastapi.staticfiles import StaticFiles
 from google.cloud import storage
 from google.cloud import pubsub_v1
-from sources.gcp import StorageBucket, PubSubPublisher
+from services.gcp import StorageBucket, PubSubPublisher
 from utils import generate_signed_urls
 
 BUCKET_NAME = "ai-video-summarizer-dev-bucket"
