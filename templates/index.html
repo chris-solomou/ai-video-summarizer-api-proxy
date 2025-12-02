@@ -146,8 +146,9 @@
                 if (!signedRes.ok) throw new Error("Failed to get signed URLs");
 
                 const { files: signedFiles } = await signedRes.json();
+                console.log(signedFiles)
                 
-                // 2. Upload each file with PUT
+                // 2. Upload each file with a PUT request
                 await Promise.all(signedFiles.map((sf, idx) =>
                     fetch(sf.signed_url, {
                         method: "PUT",
