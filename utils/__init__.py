@@ -16,5 +16,3 @@ def generate_signed_urls(file_names: List[str], storage_bucket:StorageBucket) ->
         except Exception as e:
             print(f"The following exception has occurred {e}!")
         return signed_urls
-
-print(generate_video_id("file.mp34"))
