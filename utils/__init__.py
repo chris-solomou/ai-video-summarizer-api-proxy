@@ -1,6 +1,6 @@
 from typing import List, Dict
 import uuid
-from sources.gcp import StorageBucket
+from services.gcp import StorageBucket
 
 def generate_video_id(file_name: str) -> str:
     ext = file_name.split(".")[-1]

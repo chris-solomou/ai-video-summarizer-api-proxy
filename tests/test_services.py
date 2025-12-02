@@ -1,7 +1,7 @@
 from utils import generate_video_id, generate_signed_urls
 import pytest
 from google.cloud import storage
-from sources.gcp import StorageBucket
+from services.gcp import StorageBucket
 from typing import List, Dict
 
 @pytest.mark.parametrize(
