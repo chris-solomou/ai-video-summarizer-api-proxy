@@ -8,6 +8,7 @@
 </head>
 
 <body>
+    <a href="/dashboard" class="dashboard-link">Go to Dashboard</a>
     <img class="logo" src="{{ url_for('static', path='images/logo.png') }}" alt="Logo">
 
     <main>
@@ -42,18 +43,18 @@
 
                 <div id="customPromptContainer" style="display:none; margin-top:1rem;">
                     <label for="customPrompt">Custom Prompt</label>
-                    <textarea id="customPrompt" rows="5"></textarea>
+                    <textarea id="customPrompt" rows="7"></textarea>
                 </div>
             </div>
 
             <!-- Audience Context -->
             <div>
                 <label for="audienceContext">Audience Context (optional)</label>
-                <textarea id="audienceContext" rows="6"
+                <textarea id="audienceContext" rows="7"
                     placeholder="Provide additional context for the summary"></textarea>
             </div>
 
-            <!-- Summary Details -->
+            <!-- Summary Options -->
             <fieldset style="padding:1rem; border:1px solid #ccc; border-radius:5px;">
                 <legend>Summary Options</legend>
 

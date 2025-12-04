@@ -6,7 +6,7 @@ body {
 
 .logo {
     position: fixed;
-    top: -29px;
+    top: -30px;
     left: -25px;
     width: 350px;
     z-index: 99;
@@ -72,4 +72,22 @@ button:hover { background: #0056b3; }
 
 @media (max-width: 600px) {
     .checkbox-container { flex-direction: column; }
+}
+
+.dashboard-link {
+    position: absolute;
+    top: 1.75rem;
+    right: 2rem;
+    font-weight: bold;
+    background: #08386b;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background 0.8s ease;
+    z-index: 9999; /* Make sure it's above other elements */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.dashboard-link:hover {
+    background: #0056b3;
 }
