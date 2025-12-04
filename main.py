@@ -30,7 +30,7 @@ async def index(request: Request) -> Any:
 
 @app.get("/dashboard")
 async def results(request: Request) -> Any:
-    return templates.TemplateResponse(request, "results.html")
+    return templates.TemplateResponse(request, "dashboard.html")
 
 @app.post("/generate-signed-urls")
 async def get_signed_urls(
