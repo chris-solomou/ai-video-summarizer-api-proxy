@@ -4,6 +4,7 @@ import pytest
 
 client = TestClient(app)
 
+
 def test_get_root():
     response = client.get("/")
     assert response.status_code == 200
@@ -11,7 +12,7 @@ def test_get_root():
 
 
 @pytest.mark.parametrize(
-    "payload",  
+    "payload",
     [
         {
             "files": [
@@ -28,9 +29,7 @@ def test_valid_signed_urls(payload):
     assert isinstance(response.json()["files"], list)
 
 
-@pytest.mark.parametrize(
-    "payload", [{}]
-)
+@pytest.mark.parametrize("payload", [{}])
 def test_invalid_signed_urls(payload):
     response = client.post("/generate-signed-urls", json=payload)
     assert response.status_code == 422
