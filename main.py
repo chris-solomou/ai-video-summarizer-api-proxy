@@ -26,8 +26,11 @@ templates = Jinja2Templates(directory="templates")
 
 @app.get("/")
 async def index(request: Request) -> Any:
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse(request,"index.html")
 
+@app.get("/dashboard")
+async def results(request: Request) -> Any:
+    return templates.TemplateResponse(request, "results.html")
 
 @app.post("/generate-signed-urls")
 async def get_signed_urls(
@@ -43,6 +46,9 @@ async def get_signed_urls(
 
 @app.post("/submit-form-data")
 async def submit_metadata(form_data: FormData) -> None:
+
+    # store data from the initial request here 
+
     data = form_data.model_dump()
     video_ids = data.pop("video_ids")
     for video_id in video_ids:

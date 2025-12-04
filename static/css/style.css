@@ -91,3 +91,103 @@ button:hover { background: #0056b3; }
 .dashboard-link:hover {
     background: #0056b3;
 }
+.container,.container-fluid,.container-sm,.container-md,.container-lg,.container-xl,.container-xxl {
+    position: absolute;
+    top:10rem;
+    right: 15rem;
+    width: 80%;
+    padding-right: var(--bs-gutter-x, 1rem);
+    padding-left: var(--bs-gutter-x, 1rem);
+    margin-right: auto;
+}
+
+/* Container for horizontal scroll */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 20px;
+    background: #ffffff;
+    padding: 1.5rem;
+
+    /* Subtle inner shadow */
+    box-shadow: inset 0 0 5px rgb(0 0 0 / 63%);
+}
+/* Responsive container */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 10px;
+    background: #ffffff;
+    padding: 0.75rem;
+}
+
+/* Base table styling */
+.table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+/* Table header */
+.table thead th {
+    background: #05396d;
+    color: #ffff;
+    font-weight: 600;
+    padding: 14px 18px;  /* consistent padding */
+    text-align: left;    /* aligns with row content */
+    border-bottom: 2px solid #e3e6ea;
+    white-space: nowrap;
+}
+
+/* Checkbox column centered */
+.table thead th:first-child,
+.table tbody td:first-child {
+    text-align: center;
+    width: 50px;
+}
+
+/* Table body rows */
+.table tbody td {
+    padding: 14px 18px;  /* same as header, perfect alignment */
+    border-bottom: 1px solid #eef1f5;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+/* Hover effect */
+.table-hover tbody tr:hover {
+    background-color: #f9fbfd;
+    transition: 0.15s ease-in-out;
+}
+
+/* Action link styling */
+.table a {
+    text-decoration: none;
+    color: #0074d9;
+    font-weight: 500;
+}
+
+.table a:hover {
+    text-decoration: underline;
+}
+
+/* Fix header/row mismatch due to checkbox width */
+.table thead th:first-child,
+.table tbody td:first-child {
+    width: 40px;
+    min-width: 40px;
+}
+
+/* Optional: smooth scroll bar */
+.table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #c5ced6;
+    border-radius: 10px;
+}
+
+/* Add to your style.css or in a <style> block */
+h1.mb-0 {
+    margin-bottom: 1.5rem; /* Adjust as needed */
+}
