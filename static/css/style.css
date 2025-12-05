@@ -4,18 +4,26 @@ body {
     margin: 0;
 }
 
+.logo-container {
+    width: 100%;
+    text-align: left;
+    padding-top: 0;     
+    padding-bottom: 0;
+}
+
 .logo {
-    position: fixed;
-    top: -30px;
-    left: -25px;
+    position: static;
     width: 350px;
-    z-index: 99;
+    max-width: 100%;
+    margin-top: -30px;      
+    margin-left: -30px;      
+    display: block;      
 }
 
 main {
-    margin: 95px auto 0 auto; /* top spacing instead of absolute positioning */
+    margin: 95px auto 0 auto;
     max-width: 800px;
-    width: 90%;               /* scales with viewport */
+    width: 90%; 
     background: #fff;
     padding: 2rem;
     border-radius: 8px;
@@ -23,7 +31,6 @@ main {
     box-sizing: border-box;
 }
 
-/* Form and typography */
 h1 { margin-bottom: 0.25rem; }
 h2 { font-weight: normal; font-size: 1rem; margin-bottom: 1.5rem; color: #555; }
 form { display: grid; gap: 1rem; }
@@ -57,7 +64,6 @@ textarea { resize: vertical; }
 .checkbox-container > div { flex: 1; }
 .checkbox-group { display: flex; align-items: center; gap: 0.5rem; }
 
-/* Buttons */
 button {
     background: #072e5b;
     color: #fff;
@@ -85,7 +91,7 @@ button:hover { background: #0056b3; }
     border-radius: 4px;
     text-decoration: none;
     transition: background 0.8s ease;
-    z-index: 9999; /* Make sure it's above other elements */
+    z-index: 9999;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 .dashboard-link:hover {
@@ -94,11 +100,12 @@ button:hover { background: #0056b3; }
 .container,.container-fluid,.container-sm,.container-md,.container-lg,.container-xl,.container-xxl {
     position: absolute;
     top:10rem;
-    right: 15rem;
-    width: 80%;
+    right: 12rem;
+    width: 86%;
     padding-right: var(--bs-gutter-x, 1rem);
     padding-left: var(--bs-gutter-x, 1rem);
     margin-right: auto;
+    padding-bottom: 4rem;
 }
 
 /* Container for horizontal scroll */
@@ -112,7 +119,6 @@ button:hover { background: #0056b3; }
     /* Subtle inner shadow */
     box-shadow: inset 0 0 5px rgb(0 0 0 / 63%);
 }
-/* Responsive container */
 .table-responsive {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -121,46 +127,46 @@ button:hover { background: #0056b3; }
     padding: 0.75rem;
 }
 
-/* Base table styling */
 .table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
+    table-layout: fixed; 
 }
 
 /* Table header */
 .table thead th {
-    background: #05396d;
+    background: #032c55;
     color: #ffff;
     font-weight: 600;
-    padding: 14px 18px;  /* consistent padding */
-    text-align: left;    /* aligns with row content */
+    padding: 14px 18px;
+    text-align: left; 
     border-bottom: 2px solid #e3e6ea;
     white-space: nowrap;
+    text-align: center;
 }
 
-/* Checkbox column centered */
-.table thead th:first-child,
-.table tbody td:first-child {
-    text-align: center;
-    width: 50px;
-}
 
 /* Table body rows */
 .table tbody td {
-    padding: 14px 18px;  /* same as header, perfect alignment */
+    padding: 14px 18px;
     border-bottom: 1px solid #eef1f5;
     vertical-align: middle;
     white-space: nowrap;
 }
 
-/* Hover effect */
+.table td.truncate-wrap {
+    max-width: 450px;
+    white-space: normal !important;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
 .table-hover tbody tr:hover {
-    background-color: #f9fbfd;
+    background-color: #e5edf5;
     transition: 0.15s ease-in-out;
 }
 
-/* Action link styling */
 .table a {
     text-decoration: none;
     color: #0074d9;
@@ -171,14 +177,12 @@ button:hover { background: #0056b3; }
     text-decoration: underline;
 }
 
-/* Fix header/row mismatch due to checkbox width */
 .table thead th:first-child,
 .table tbody td:first-child {
     width: 40px;
     min-width: 40px;
 }
 
-/* Optional: smooth scroll bar */
 .table-responsive::-webkit-scrollbar {
     height: 8px;
 }
@@ -187,7 +191,11 @@ button:hover { background: #0056b3; }
     border-radius: 10px;
 }
 
-/* Add to your style.css or in a <style> block */
 h1.mb-0 {
-    margin-bottom: 1.5rem; /* Adjust as needed */
+    margin-bottom: 1.5rem;
 }
+
+.table th, .table td {
+    text-align: center;
+}
+
