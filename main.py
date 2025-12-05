@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from typing import Dict, Any, List
 from datetime import datetime
@@ -8,6 +9,7 @@ from google.cloud import storage
 from google.cloud import pubsub_v1
 from services.gcp import StorageBucket, PubSubPublisher
 from utils import generate_signed_urls
+import json
 
 BUCKET_NAME = "ai-video-summarizer-dev-bucket"
 TOPIC = "topic"
@@ -24,13 +26,15 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 async def index(request: Request) -> Any:
     return templates.TemplateResponse(request,"index.html")
 
-@app.get("/dashboard")
-async def results(request: Request) -> Any:
-    return templates.TemplateResponse(request, "dashboard.html")
+@app.get("/dashboard", response_class=HTMLResponse)
+async def dashboard(request: Request):
+    with open("actions.json", "r") as f:
+        actions = json.load(f)
+    return templates.TemplateResponse("dashboard.html", {"request": request, "actions": actions})
 
 @app.post("/generate-signed-urls")
 async def get_signed_urls(
