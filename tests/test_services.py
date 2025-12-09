@@ -37,3 +37,18 @@ def test_generate_signed_urls(files: List[Dict[str, str]]):
         assert entry["video_id"].endswith(file["filename"].split(".")[-1])
         # bucket name is included in signed url
         assert BUCKET_NAME in entry["signed_url"]
+
+
+@pytest.mark.parametrize(
+    "file_id,exists",
+    [
+        ("007902be-9129-4950-a0a2-681ad703a6dc.png", True),
+        ("18f3669d-7a3d-4bec-a83b-47abb99153b9.png", True),
+        ("video_1234.mov", False),
+    ],
+)
+def test_file_exists(file_id: str, exists: bool):
+    BUCKET_NAME = "ai-video-summarizer-dev-bucket"
+    storage_client = storage.Client()
+    storage_bucket = StorageBucket(bucket_name=BUCKET_NAME, client=storage_client)
+    assert storage_bucket.check_file_exists(file_id) == exists
