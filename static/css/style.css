@@ -29,6 +29,7 @@ main {
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     box-sizing: border-box;
+    padding-top: 1rem;
 }
 
 h1 { margin-bottom: 0.25rem; }
@@ -80,6 +81,8 @@ button:hover { background: #0056b3; }
     .checkbox-container { flex-direction: column; }
 }
 
+/* DASHBOARD SECTION */
+
 .dashboard-link {
     position: absolute;
     top: 1.75rem;
@@ -97,6 +100,7 @@ button:hover { background: #0056b3; }
 .dashboard-link:hover {
     background: #0056b3;
 }
+
 .container,.container-fluid,.container-sm,.container-md,.container-lg,.container-xl,.container-xxl {
     position: absolute;
     top:10rem;
@@ -119,6 +123,7 @@ button:hover { background: #0056b3; }
     /* Subtle inner shadow */
     box-shadow: inset 0 0 5px rgb(0 0 0 / 63%);
 }
+
 .table-responsive {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -140,12 +145,12 @@ button:hover { background: #0056b3; }
     color: #ffff;
     font-weight: 600;
     padding: 14px 18px;
+    font-size: 18px;
     text-align: left; 
     border-bottom: 2px solid #e3e6ea;
     white-space: nowrap;
     text-align: center;
 }
-
 
 /* Table body rows */
 .table tbody td {
