@@ -45,7 +45,7 @@ def test_invalid_signed_urls(payload):
 
 def test_get_root_authenticated():
     valid_token = create_jwt(
-        email="test@productmadness.com", secret_key=API_SECRET_KEY, algorithm=ALGORITHM
+        email="test@productmadness.com",name="test_name", secret_key=API_SECRET_KEY, algorithm=ALGORITHM
     )
     response = client.get("/", cookies={"token": valid_token})
     assert response.status_code == 200
@@ -55,6 +55,7 @@ def test_get_root_authenticated():
 def test_dashboard_expired_token_redirects():
     expired_token = valid_token = create_jwt(
         email="test@productmadness.com",
+        name="test_name",
         secret_key=API_SECRET_KEY,
         algorithm=ALGORITHM,
         expires_in_minutes=-10,
@@ -71,6 +72,7 @@ def test_index_invalid_token_redirects():
 def test_index_expired_token_redirects():
     expired_token = create_jwt(
         email="test@productmadness.com",
+        name="test_name",
         secret_key=API_SECRET_KEY,
         algorithm=ALGORITHM,
         expires_in_minutes=-10,  # expired
@@ -82,7 +84,7 @@ def test_index_expired_token_redirects():
 
 def test_index_valid_token_renders():
     valid_token = create_jwt(
-        email="test@productmadness.com", secret_key=API_SECRET_KEY, algorithm=ALGORITHM
+        email="test@productmadness.com",name="test_name", secret_key=API_SECRET_KEY, algorithm=ALGORITHM
     )
     response = client.get("/", cookies={"token": valid_token})
     assert response.status_code == 200
