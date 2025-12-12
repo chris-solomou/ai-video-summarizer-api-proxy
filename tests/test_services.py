@@ -1,4 +1,4 @@
-from utils import generate_video_id, generate_signed_urls
+from utils import generate_video_id, generate_signed_urls, verify_email_domain
 import pytest
 from google.cloud import storage
 from services.gcp import StorageBucket
@@ -52,3 +52,19 @@ def test_file_exists(file_id: str, exists: bool):
     storage_client = storage.Client()
     storage_bucket = StorageBucket(bucket_name=BUCKET_NAME, client=storage_client)
     assert storage_bucket.check_file_exists(file_id) == exists
+
+
+@pytest.mark.parametrize(
+    "email,valid",
+    [
+        ("mary.hill@productmadness.com", True),
+        ("alex.smith@gmail.com", False),
+        ("mary_andrews@yahoo.com", False),
+        ("ben.davies@.aristocrat.com", False),
+        ("ben.davies@aristocrat.com", True),
+        ("laura_andrews.gmail.com", False),
+        ("laura_andrews.productmadness.com", False),
+    ],
+)
+def test_valid_email_domain(email: str, valid: bool):
+    assert verify_email_domain(email) == valid
