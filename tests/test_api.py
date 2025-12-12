@@ -40,12 +40,15 @@ def test_valid_signed_urls(payload):
 @pytest.mark.parametrize("payload", [{}])
 def test_invalid_signed_urls(payload):
     response = client.post("/generate-signed-urls", json=payload)
-    assert response.status_code == 422 # failed to parse
+    assert response.status_code == 422  # failed to parse
 
 
 def test_get_root_authenticated():
     valid_token = create_jwt(
-        email="test@productmadness.com",name="test_name", secret_key=API_SECRET_KEY, algorithm=ALGORITHM
+        email="test@productmadness.com",
+        name="test_name",
+        secret_key=API_SECRET_KEY,
+        algorithm=ALGORITHM,
     )
     response = client.get("/", cookies={"token": valid_token})
     assert response.status_code == 200
@@ -84,7 +87,10 @@ def test_index_expired_token_redirects():
 
 def test_index_valid_token_renders():
     valid_token = create_jwt(
-        email="test@productmadness.com",name="test_name", secret_key=API_SECRET_KEY, algorithm=ALGORITHM
+        email="test@productmadness.com",
+        name="test_name",
+        secret_key=API_SECRET_KEY,
+        algorithm=ALGORITHM,
     )
     response = client.get("/", cookies={"token": valid_token})
     assert response.status_code == 200

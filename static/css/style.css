@@ -85,8 +85,8 @@ button:hover { background: #0056b3; }
 
 .dashboard-link {
     position: absolute;
-    top: 1.75rem;
-    right: 2rem;
+    top: 3.65rem;
+    right: 5rem;
     font-weight: bold;
     background: #08386b;
     color: #fff;
@@ -100,6 +100,16 @@ button:hover { background: #0056b3; }
 .dashboard-link:hover {
     background: #0056b3;
 }
+
+.welcome{
+    position:absolute;
+    top:0.2rem;
+    font-size:20px;
+    font-weight:bold;
+    color:#042549;
+    right:2rem;
+}
+
 
 .container,.container-fluid,.container-sm,.container-md,.container-lg,.container-xl,.container-xxl {
     position: absolute;

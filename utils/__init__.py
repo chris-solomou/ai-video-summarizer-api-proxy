@@ -1,7 +1,6 @@
 from typing import List, Dict, Union, Any
 import uuid
 from datetime import datetime, timedelta, timezone
-import os
 from jose import jwt, JWTError, ExpiredSignatureError
 from services.gcp import StorageBucket
 
@@ -37,9 +36,10 @@ def verify_email_domain(email:str) -> bool:
         return False
     return True
 
-def create_jwt(email: str, secret_key: str, algorithm: str, expires_in_minutes=60) -> Dict[str,Any]:
+def create_jwt(email: str,name:str,secret_key: str, algorithm: str, expires_in_minutes=60) -> Dict[str,Any]:
     payload = {
         "sub": email,
+        "name":name,
         "iat": datetime.now(timezone.utc),
         "exp": datetime.now(timezone.utc) + timedelta(minutes=expires_in_minutes),
     }

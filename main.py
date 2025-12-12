@@ -59,7 +59,8 @@ async def index(request: Request) -> Response:
         response = RedirectResponse("/auth/google/login")
         response.delete_cookie("token")
         return response
-    return templates.TemplateResponse(request,"index.html")
+    user_name = payload.get("name")
+    return templates.TemplateResponse(request,"index.html",{"user_name":user_name})
 
 
 @app.get("/dashboard", response_class=HTMLResponse)
@@ -103,13 +104,15 @@ async def google_callback(request: Request) -> RedirectResponse:
     request.session.clear()
 
     user_info = token["userinfo"]
+    print(user_info)
     email = user_info["email"]
+    name = user_info.get("name","")
     if not verify_email_domain(email):
         raise HTTPException(
             status_code=403, detail="Forbidden"
         )  # TODO: replace with a 403 template
 
-    jwt_token = create_jwt(email=email, secret_key=API_SECRET_KEY, algorithm=ALGORITHM)
+    jwt_token = create_jwt(email=email,name=name, secret_key=API_SECRET_KEY, algorithm=ALGORITHM)
 
     response = RedirectResponse("/")
     response.set_cookie(
