@@ -1,5 +1,6 @@
 from typing import List, Dict
 import uuid
+from jose import jwt, JWTError, ExpiredSignatureError
 from services.gcp import StorageBucket
 
 def generate_video_id(file_name: str) -> str:
@@ -16,3 +17,18 @@ def generate_signed_urls(file_names: List[str], storage_bucket:StorageBucket) ->
         except Exception as e:
             print(f"The following exception has occurred {e}!")
         return signed_urls
+
+def verify_jwt_token(token: str, secret_key:str, algorithm:str):
+    try:
+        payload = jwt.decode(token, secret_key, algorithms=[algorithm])
+        return payload
+    except ExpiredSignatureError:
+        return None
+    except JWTError:
+        return None
+
+def verify_email_domain(email:str) -> bool:
+    email_ext = email.split("@")[1].strip()
+    if email_ext not in ["productmadness.com","aristocrat.com"]:
+        return False
+    return True
