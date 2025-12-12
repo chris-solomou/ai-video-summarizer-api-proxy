@@ -1,5 +1,7 @@
-from typing import List, Dict
+from typing import List, Dict, Union, Any
 import uuid
+from datetime import datetime, timedelta, timezone
+import os
 from jose import jwt, JWTError, ExpiredSignatureError
 from services.gcp import StorageBucket
 
@@ -18,9 +20,9 @@ def generate_signed_urls(file_names: List[str], storage_bucket:StorageBucket) ->
             print(f"The following exception has occurred {e}!")
         return signed_urls
 
-def verify_jwt_token(token: str, secret_key:str, algorithm:str):
+def verify_jwt_token(token: str, secret_key: str, algorithm: str) -> Union[Dict[str,Any],None]:
     try:
-        payload = jwt.decode(token, secret_key, algorithms=[algorithm])
+        payload = jwt.decode(token, secret_key, algorithms=[algorithm], options={"require": ["exp"]})
         return payload
     except ExpiredSignatureError:
         return None
@@ -28,7 +30,17 @@ def verify_jwt_token(token: str, secret_key:str, algorithm:str):
         return None
 
 def verify_email_domain(email:str) -> bool:
+    if "@" not in email:
+        return False
     email_ext = email.split("@")[1].strip()
     if email_ext not in ["productmadness.com","aristocrat.com"]:
         return False
     return True
+
+def create_jwt(email: str, secret_key: str, algorithm: str, expires_in_minutes=60) -> Dict[str,Any]:
+    payload = {
+        "sub": email,
+        "iat": datetime.now(timezone.utc),
+        "exp": datetime.now(timezone.utc) + timedelta(minutes=expires_in_minutes),
+    }
+    return jwt.encode(payload, secret_key, algorithm=algorithm)
