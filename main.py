@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from fastapi.templating import Jinja2Templates
 from typing import Dict, List
@@ -9,20 +9,22 @@ from fastapi.staticfiles import StaticFiles
 from google.cloud import storage
 from google.cloud import pubsub_v1
 from services.gcp import StorageBucket, PubSubPublisher
-from utils import generate_signed_urls, verify_email_domain, verify_jwt_token
+from utils import (
+    generate_signed_urls,
+    verify_email_domain,
+    verify_jwt_token,
+    create_jwt,
+)
 import json
-import time
 import os
 from dotenv import load_dotenv
-from jose import jwt
 from oauth import google
-from jose import jwt, JWTError, ExpiredSignatureError
-
 
 load_dotenv()
 
-ALGORITHM = "HS256"
 API_SECRET_KEY = os.getenv("API_SECRET_KEY")
+ALGORITHM = "HS256"
+
 BUCKET_NAME = "ai-video-summarizer-dev-bucket"
 TOPIC = "topic"
 
@@ -57,7 +59,7 @@ async def index(request: Request) -> Response:
         response = RedirectResponse("/auth/google/login")
         response.delete_cookie("token")
         return response
-    return templates.TemplateResponse(request, "index.html")
+    return templates.TemplateResponse(request,"index.html")
 
 
 @app.get("/dashboard", response_class=HTMLResponse)
@@ -65,7 +67,7 @@ async def dashboard(request: Request) -> Response:
     with open("actions.json", "r") as f:
         actions = json.load(f)
     return templates.TemplateResponse(
-        "dashboard.html", {"request": request, "actions": actions}
+        request, "dashboard.html", {"actions": actions}
     )
 
 
@@ -103,16 +105,16 @@ async def google_callback(request: Request) -> RedirectResponse:
     user_info = token["userinfo"]
     email = user_info["email"]
     if not verify_email_domain(email):
-        raise ValueError("Not Allowed")  # replace with a 403 template later
+        raise HTTPException(
+            status_code=403, detail="Forbidden"
+        )  # TODO: replace with a 403 template
 
-    jwt_token = jwt.encode(
-        {"sub": user_info["email"], "exp": int(time.time()) + 360},
-        API_SECRET_KEY,
-        algorithm=ALGORITHM,
-    )
+    jwt_token = create_jwt(email=email, secret_key=API_SECRET_KEY, algorithm=ALGORITHM)
 
     response = RedirectResponse("/")
-    response.set_cookie("token", jwt_token, httponly=True, samesite="lax", max_age=360)
+    response.set_cookie(
+        "token", jwt_token, httponly=True, secure=True, samesite="lax", max_age=3600
+    )
     return response
 
 
